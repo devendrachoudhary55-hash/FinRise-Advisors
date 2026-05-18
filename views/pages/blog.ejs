@@ -1,0 +1,72 @@
+<section class="page-hero">
+  <div class="container">
+    <span class="tag" style="margin-bottom:16px;display:inline-block;">Resources</span>
+    <h1>Blog & Insights</h1>
+    <p>Accounting tips, CFO insights, and construction finance guides — written for US business owners.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Category filter -->
+    <div class="blog-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="CFO Insights">CFO Insights</button>
+      <button class="filter-btn" data-filter="Construction">Construction</button>
+      <button class="filter-btn" data-filter="Business Finance">Business Finance</button>
+    </div>
+
+    <div class="blog-grid">
+      <% posts.forEach(post => { %>
+      <article class="blog-card fade-up" data-category="<%= post.category %>">
+        <a href="/blog/<%= post.slug %>" class="blog-card-img-link">
+          <div class="blog-card-img blog-img-<%= post.category.replace(/\s+/g,'-').toLowerCase() %>">
+            <i class="fas <%= post.icon %> blog-img-icon"></i>
+            <span class="blog-cat"><%= post.category %></span>
+          </div>
+        </a>
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            <span><i class="far fa-calendar-alt"></i> <%= post.date %></span>
+            <span><i class="far fa-clock"></i> <%= post.readTime %></span>
+          </div>
+          <h2><a href="/blog/<%= post.slug %>"><%= post.title %></a></h2>
+          <p><%= post.excerpt %></p>
+          <a href="/blog/<%= post.slug %>" class="blog-read-more">Read Article <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner">
+      <span class="cta-tag">Free Consultation</span>
+      <h2>Have Questions About Your Finances?</h2>
+      <p>Our team is happy to answer any questions — no obligation, completely free.</p>
+      <a href="/contact-us" class="btn btn-white">Talk to an Expert <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<script>
+// Blog category filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.blog-card').forEach(card => {
+      if (filter === 'all' || card.dataset.category === filter) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+</script>

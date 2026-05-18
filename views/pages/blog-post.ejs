@@ -1,0 +1,99 @@
+<section class="page-hero" style="padding-bottom:60px;">
+  <div class="container">
+    <a href="/blog" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+    <div class="post-hero-meta">
+      <span class="tag" style="margin:0;"><%= post.category %></span>
+      <span class="post-meta-item"><i class="fas fa-user"></i> CA Devendra Choudhary</span>
+      <span class="post-meta-item"><i class="far fa-calendar-alt"></i> <%= post.date %></span>
+      <span class="post-meta-item"><i class="far fa-clock"></i> <%= post.readTime %></span>
+    </div>
+    <h1 style="max-width:760px;"><%= post.title %></h1>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="post-layout">
+
+      <!-- Main content -->
+      <article class="post-content">
+        <div class="post-featured-img post-img-<%= post.category.replace(/\s+/g,'-').toLowerCase() %>">
+          <div class="post-featured-inner">
+            <i class="fas <%= post.icon %>"></i>
+            <span><%= post.category %></span>
+          </div>
+        </div>
+        <div class="post-body">
+          <%- post.body %>
+        </div>
+
+        <!-- Author Bio -->
+        <div class="author-bio">
+          <div class="author-bio-avatar">DC</div>
+          <div class="author-bio-info">
+            <h4>CA Devendra Choudhary</h4>
+            <span>Founder & Senior CFO Advisor, FinRise Advisors</span>
+            <p>Devendra is a Chartered Accountant (CA, ICAI — India) with 8+ years of hands-on experience in outsourced accounting, construction finance, and fractional CFO advisory for US small and mid-sized businesses. He works across multiple industries — including construction, professional services, retail, and technology — helping business owners get real clarity on their numbers and make smarter financial decisions.</p>
+          </div>
+        </div>
+
+        <!-- CTA Box -->
+        <div class="post-cta-box">
+          <div class="post-cta-icon"><i class="fas fa-calendar-check"></i></div>
+          <div>
+            <h3>Ready to get your finances in order?</h3>
+            <p>Book a free 30-minute consultation with FinRise Advisors — no obligation.</p>
+          </div>
+          <a href="/contact-us" class="btn btn-primary">Book Free Consultation <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- Sidebar -->
+      <aside class="post-sidebar">
+        <div class="sidebar-widget">
+          <h4>Free Consultation</h4>
+          <p>Talk to a FinRise advisor about your accounting or CFO needs — completely free.</p>
+          <a href="/contact-us" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px;">Book a Call <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="sidebar-widget">
+          <h4>Our Services</h4>
+          <ul class="sidebar-links">
+            <li><a href="/services#outsourced-accounting"><i class="fas fa-chevron-right"></i> Outsourced Accounting</a></li>
+            <li><a href="/services#fractional-cfo"><i class="fas fa-chevron-right"></i> Fractional CFO</a></li>
+            <li><a href="/services#bookkeeping"><i class="fas fa-chevron-right"></i> Bookkeeping</a></li>
+            <li><a href="/services#construction"><i class="fas fa-chevron-right"></i> Construction Accounting</a></li>
+            <li><a href="/services#payroll"><i class="fas fa-chevron-right"></i> Payroll Services</a></li>
+            <li><a href="/services#tax"><i class="fas fa-chevron-right"></i> Tax Compliance</a></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-widget sidebar-contact">
+          <i class="fas fa-envelope"></i>
+          <p>we@finriseadvisors.com</p>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Related posts -->
+    <% if (related.length > 0) { %>
+    <div class="related-posts">
+      <h3>Related Articles</h3>
+      <div class="related-grid">
+        <% related.forEach(p => { %>
+        <a href="/blog/<%= p.slug %>" class="related-card">
+          <div class="related-img blog-img-<%= p.category.replace(/\s+/g,'-').toLowerCase() %>" style="display:flex;align-items:center;justify-content:center;">
+            <i class="fas <%= p.icon %>" style="font-size:2rem;color:rgba(255,255,255,0.7);"></i>
+          </div>
+          <div class="related-body">
+            <span class="blog-cat" style="font-size:0.68rem;padding:3px 10px;"><%= p.category %></span>
+            <h4><%= p.title %></h4>
+            <span><%= p.readTime %></span>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</section>

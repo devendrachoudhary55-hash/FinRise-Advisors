@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary SEO -->
+  <title><%= title %></title>
+  <meta name="description" content="<%= metaDescription %>">
+  <meta name="keywords" content="<%= keywords %>">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="<%= canonicalUrl %>">
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= title %>">
+  <meta property="og:description" content="<%= metaDescription %>">
+  <meta property="og:url" content="<%= canonicalUrl %>">
+  <meta property="og:image" content="https://www.finriseadvisors.com/public/img/uploads/settings//171596451666478a64f28ec.png">
+  <meta property="og:site_name" content="FinRise Advisors">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= title %>">
+  <meta name="twitter:description" content="<%= metaDescription %>">
+  <meta name="twitter:image" content="https://www.finriseadvisors.com/public/img/uploads/settings//171596451666478a64f28ec.png">
+
+  <!-- Schema.org — Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AccountingService",
+    "name": "FinRise Advisors",
+    "url": "https://www.finriseadvisors.com",
+    "logo": "https://www.finriseadvisors.com/public/img/uploads/settings//171596451666478a64f28ec.png",
+    "description": "Outsourced accounting, bookkeeping, payroll, and fractional CFO services for US small and mid-sized businesses.",
+    "email": "we@finriseadvisors.com",
+    "areaServed": "US",
+    "currenciesAccepted": "USD",
+    "priceRange": "$$",
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=61559260650283",
+      "https://www.instagram.com/finriseadvisors/",
+      "https://www.linkedin.com/company/101267222/"
+    ],
+    "openingHours": "Mo-Fr 09:00-18:00",
+    "serviceType": [
+      "Outsourced Accounting",
+      "Fractional CFO Services",
+      "Bookkeeping",
+      "Payroll Services",
+      "Construction Accounting",
+      "Tax Compliance"
+    ]
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Google Analytics -->
+  <!-- REPLACE G-XXXXXXXXXX with your actual Measurement ID from analytics.google.com -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="/" class="logo">
+      <img src="https://www.finriseadvisors.com/public/img/uploads/settings//171596451666478a64f28ec.png" alt="FinRise Advisors — Outsourced Accounting & Fractional CFO">
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/" class="<%= page === 'home' ? 'active' : '' %>">Home</a></li>
+      <li><a href="/about-us" class="<%= page === 'about' ? 'active' : '' %>">About Us</a></li>
+      <li class="dropdown">
+        <a href="/services" class="<%= page === 'services' ? 'active' : '' %>">Services <i class="fas fa-chevron-down" style="font-size:0.65rem;"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="/services#outsourced-accounting"><i class="fas fa-book-open"></i> Outsourced Accounting</a></li>
+          <li><a href="/services#fractional-cfo"><i class="fas fa-chart-pie"></i> Fractional CFO</a></li>
+          <li><a href="/services#bookkeeping"><i class="fas fa-calculator"></i> Bookkeeping</a></li>
+          <li><a href="/services#construction"><i class="fas fa-hard-hat"></i> Construction Accounting</a></li>
+          <li><a href="/services#payroll"><i class="fas fa-users"></i> Payroll Services</a></li>
+          <li><a href="/services#tax"><i class="fas fa-file-invoice"></i> Tax Compliance</a></li>
+        </ul>
+      </li>
+      <li><a href="/pricing" class="<%= page === 'pricing' ? 'active' : '' %>">Pricing</a></li>
+      <li><a href="/resources" class="<%= page === 'resources' ? 'active' : '' %>">Resources</a></li>
+      <li><a href="/blog" class="<%= page === 'blog' ? 'active' : '' %>">Blog</a></li>
+      <li><a href="/contact-us" class="<%= page === 'contact' ? 'active' : '' %>">Contact</a></li>
+    </ul>
+    <a href="/contact-us" class="btn-nav">Get Started</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<%- body %>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://www.finriseadvisors.com/public/img/uploads/settings//171596451666478a64f28ec.png" alt="FinRise Advisors" class="footer-logo">
+        <p>Dedicated outsourced accounting and fractional CFO services for US businesses. Your full-service finance team at a fraction of the cost.</p>
+        <div class="social-links">
+          <a href="https://www.facebook.com/profile.php?id=61559260650283" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/finriseadvisors/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/company/101267222/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about-us">About Us</a></li>
+          <li><a href="/services">Services</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/resources">Free Resources</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/contact-us">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Our Services</h4>
+        <ul>
+          <li><a href="/services#outsourced-accounting">Outsourced Accounting</a></li>
+          <li><a href="/services#fractional-cfo">Fractional CFO</a></li>
+          <li><a href="/services#bookkeeping">Bookkeeping</a></li>
+          <li><a href="/services#construction">Construction Accounting</a></li>
+          <li><a href="/services#payroll">Payroll Services</a></li>
+          <li><a href="/services#tax">Tax Compliance</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="contact-line"><i class="fas fa-envelope"></i> we@finriseadvisors.com</div>
+        <div class="contact-line"><i class="fas fa-globe"></i> www.finriseadvisors.com</div>
+        <div class="contact-line"><i class="fas fa-clock"></i> Mon–Fri: 9am–6pm EST</div>
+      </div>
+    </div>
+    <div class="footer-disclaimers">
+      <p><sup>*</sup> Estimated cost savings based on comparison with average annual fully-loaded cost of equivalent in-house accounting staff (base salary, benefits, payroll taxes, and overhead). Actual savings vary based on business size, service scope, and complexity.</p>
+      <p>CA Devendra Choudhary holds a Chartered Accountant (CA) designation from the Institute of Chartered Accountants of India (ICAI). FinRise Advisors provides outsourced accounting, bookkeeping, payroll, and CFO advisory services. US federal and state tax preparation and filing services are provided in coordination with appropriately licensed US tax professionals where required by applicable law.</p>
+      <p>QuickBooks&reg; is a registered trademark of Intuit Inc. Xero&trade; is a trademark of Xero Limited. NetSuite&reg; is a registered trademark of Oracle Corporation. Procore&reg; is a registered trademark of Procore Technologies, Inc. Buildertrend&trade;, JobTread&trade;, FreshBooks&trade;, Zoho Books&trade;, Wave&trade;, Stripe&reg;, and Bill.com&reg; are trademarks or registered trademarks of their respective owners. FinRise Advisors is not affiliated with, sponsored by, or endorsed by any of the above companies.</p>
+      <p>The content on this website is for general informational purposes only and does not constitute professional accounting, tax, legal, or financial advice. No professional relationship is formed by accessing this website. See our <a href="/terms-of-use" style="color:rgba(255,255,255,0.4);text-decoration:underline;">Terms of Use</a> for full details.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025–2026 FinRise Advisors. All Rights Reserved.</p>
+      <div class="footer-legal-links">
+        <a href="/privacy-policy">Privacy Policy</a>
+        <span>·</span>
+        <a href="/terms-of-use">Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+
+<!-- Tawk.to Live Chat -->
+<!-- SETUP: Sign up free at tawk.to → Dashboard → copy your embed code → replace YOUR_PROPERTY_ID below -->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadTime=new Date();
+(function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/default';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
+</body>
+</html>
