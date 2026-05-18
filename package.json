@@ -12,7 +12,10 @@
     "ejs": "^3.1.9",
     "express-ejs-layouts": "^2.5.1",
     "nodemailer": "^6.9.4",
-    "body-parser": "^1.20.2"
+    "body-parser": "^1.20.2",
+    "mongoose": "^8.4.0",
+    "express-session": "^1.17.3",
+    "connect-mongo": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

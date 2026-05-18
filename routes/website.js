@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const Submission = require('../models/Submission');
 
 // ===== BLOG POSTS DATA =====
 const blogPosts = [
@@ -398,9 +399,22 @@ router.get('/terms-of-use', (req, res) => {
   });
 });
 
-router.post('/contact', (req, res) => {
+router.post('/contact', async (req, res) => {
   const { name, email, phone, company, service, message } = req.body;
-  console.log('Contact form submission:', { name, email, company, service });
+  try {
+    const ipAddress =
+      req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+      req.socket.remoteAddress ||
+      '';
+    await Submission.create({
+      name, email, phone, company, service, message,
+      source: 'contact',
+      ipAddress
+    });
+    console.log('Contact form saved:', { name, email, company, service });
+  } catch (err) {
+    console.error('Failed to save contact submission:', err.message);
+  }
   res.json({ success: true });
 });
 
