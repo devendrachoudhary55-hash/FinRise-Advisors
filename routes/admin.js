@@ -5,7 +5,7 @@ const requireAdmin = require('../middleware/auth');
 
 // ===== LOGIN PAGE =====
 router.get('/login', (req, res) => {
-  if (req.session && req.session.isAdmin) return res.redirect('/admin');
+  if (req.signedCookies && req.signedCookies.adminAuth === 'true') return res.redirect('/admin');
   res.render('admin/login', { layout: false, error: null });
 });
 
@@ -16,7 +16,12 @@ router.post('/login', (req, res) => {
   const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'finrise2026';
 
   if (username === ADMIN_USER && password === ADMIN_PASS) {
-    req.session.isAdmin = true;
+    res.cookie('adminAuth', 'true', {
+      signed: true,
+      httpOnly: true,
+      maxAge: 8 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production'
+    });
     return res.redirect('/admin');
   }
   res.render('admin/login', { layout: false, error: 'Invalid username or password.' });
@@ -24,7 +29,7 @@ router.post('/login', (req, res) => {
 
 // ===== LOGOUT =====
 router.get('/logout', (req, res) => {
-  req.session.destroy();
+  res.clearCookie('adminAuth');
   res.redirect('/admin/login');
 });
 
