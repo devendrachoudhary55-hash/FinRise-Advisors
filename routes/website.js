@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Submission = require('../models/Submission');
+
+// Load Submission model safely — website still works even if MongoDB is unavailable
+let Submission = null;
+try { Submission = require('../models/Submission'); } catch (e) { /* no DB */ }
 
 // ===== BLOG POSTS DATA =====
 const blogPosts = [
@@ -401,19 +404,19 @@ router.get('/terms-of-use', (req, res) => {
 
 router.post('/contact', async (req, res) => {
   const { name, email, phone, company, service, message } = req.body;
-  try {
-    const ipAddress =
-      req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-      req.socket.remoteAddress ||
-      '';
-    await Submission.create({
-      name, email, phone, company, service, message,
-      source: 'contact',
-      ipAddress
-    });
-    console.log('Contact form saved:', { name, email, company, service });
-  } catch (err) {
-    console.error('Failed to save contact submission:', err.message);
+  if (Submission) {
+    try {
+      const ipAddress =
+        req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+        req.socket?.remoteAddress ||
+        '';
+      await Submission.create({ name, email, phone, company, service, message, source: 'contact', ipAddress });
+      console.log('Contact form saved:', { name, email, company, service });
+    } catch (err) {
+      console.error('Failed to save contact submission:', err.message);
+    }
+  } else {
+    console.log('Contact form (no DB):', { name, email, company, service });
   }
   res.json({ success: true });
 });

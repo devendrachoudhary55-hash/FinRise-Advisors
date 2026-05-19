@@ -2,22 +2,9 @@ const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser');
 const path = require('path');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// ===== DATABASE CONNECTION =====
-const MONGODB_URI = process.env.MONGODB_URI || '';
-if (MONGODB_URI) {
-  mongoose.connect(MONGODB_URI)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error('MongoDB connection error:', err));
-} else {
-  console.warn('MONGODB_URI not set — admin portal will not persist data.');
-}
 
 // ===== VIEW ENGINE =====
 app.set('view engine', 'ejs');
@@ -30,34 +17,48 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ===== SESSION =====
-const SESSION_SECRET = process.env.SESSION_SECRET || 'finrise-dev-secret-change-in-prod';
-const sessionConfig = {
-  secret: SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 8  // 8 hours
+// ===== SESSION (safe — works with or without MongoDB) =====
+try {
+  const session = require('express-session');
+  const MONGODB_URI = process.env.MONGODB_URI || '';
+  const SESSION_SECRET = process.env.SESSION_SECRET || 'finrise-dev-secret-2026';
+
+  const sessionConfig = {
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { httpOnly: true, maxAge: 1000 * 60 * 60 * 8 }
+  };
+
+  if (MONGODB_URI) {
+    try {
+      const mongoose = require('mongoose');
+      const MongoStore = require('connect-mongo');
+      mongoose.connect(MONGODB_URI)
+        .then(() => console.log('MongoDB connected'))
+        .catch(err => console.error('MongoDB error:', err.message));
+      sessionConfig.store = MongoStore.create({ mongoUrl: MONGODB_URI, touchAfter: 24 * 3600 });
+    } catch (dbErr) {
+      console.error('DB/session-store init failed (using memory store):', dbErr.message);
+    }
   }
-};
 
-// Use MongoDB to store sessions if DB is available; otherwise fall back to memory
-if (MONGODB_URI) {
-  sessionConfig.store = MongoStore.create({
-    mongoUrl: MONGODB_URI,
-    touchAfter: 24 * 3600 // only update session once per day unless data changes
-  });
+  app.use(session(sessionConfig));
+} catch (sessionErr) {
+  console.error('express-session init failed — admin login disabled:', sessionErr.message);
 }
-
-app.use(session(sessionConfig));
 
 // ===== ROUTES =====
 const websiteRoutes = require('./routes/website');
-const adminRoutes = require('./routes/admin');
-
 app.use('/', websiteRoutes);
-app.use('/admin', adminRoutes);
+
+try {
+  const adminRoutes = require('./routes/admin');
+  app.use('/admin', adminRoutes);
+} catch (adminErr) {
+  console.error('Admin routes failed to load:', adminErr.message);
+  app.use('/admin', (req, res) => res.status(503).send('Admin portal temporarily unavailable.'));
+}
 
 // ===== START / EXPORT =====
 if (require.main === module) {
