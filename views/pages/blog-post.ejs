@@ -97,3 +97,29 @@
     <% } %>
   </div>
 </section>
+
+<!-- BlogPosting Schema for Google Rich Results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "<%= post.title.replace(/"/g, '&quot;') %>",
+  "description": "<%= post.metaDescription.replace(/"/g, '&quot;') %>",
+  "author": {
+    "@type": "Person",
+    "name": "Devendra Choudhary",
+    "jobTitle": "Founder & Senior CFO Advisor",
+    "worksFor": {"@type": "Organization", "name": "FinRise Advisors"}
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "FinRise Advisors",
+    "logo": {"@type": "ImageObject", "url": "https://www.finriseadvisors.com/images/logo.png"}
+  },
+  "datePublished": "<%= post.date %>",
+  "dateModified": "<%= post.date %>",
+  "mainEntityOfPage": {"@type": "WebPage", "@id": "https://www.finriseadvisors.com/blog/<%= post.slug %>"},
+  "url": "https://www.finriseadvisors.com/blog/<%= post.slug %>",
+  "keywords": "<%= post.keywords %>"
+}
+</script>

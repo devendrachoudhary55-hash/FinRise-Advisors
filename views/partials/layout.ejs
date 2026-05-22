@@ -16,7 +16,9 @@
   <meta property="og:title" content="<%= title %>">
   <meta property="og:description" content="<%= metaDescription %>">
   <meta property="og:url" content="<%= canonicalUrl %>">
-  <meta property="og:image" content="https://www.finriseadvisors.com/img/og-image.png">
+  <meta property="og:image" content="https://www.finriseadvisors.com/images/logo.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="FinRise Advisors">
   <meta property="og:locale" content="en_US">
 
@@ -24,35 +26,58 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<%= title %>">
   <meta name="twitter:description" content="<%= metaDescription %>">
-  <meta name="twitter:image" content="https://www.finriseadvisors.com/img/og-image.png">
+  <meta name="twitter:image" content="https://www.finriseadvisors.com/images/logo.png">
 
-  <!-- Schema.org — Organization -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="apple-touch-icon" href="/images/logo.png">
+
+  <!-- Schema.org — Professional Service / Accounting -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "AccountingService",
     "name": "FinRise Advisors",
     "url": "https://www.finriseadvisors.com",
-    "logo": "https://www.finriseadvisors.com/img/og-image.png",
+    "logo": "https://www.finriseadvisors.com/images/logo.png",
+    "image": "https://www.finriseadvisors.com/images/logo.png",
     "description": "Outsourced accounting, bookkeeping, payroll, and fractional CFO services for US small and mid-sized businesses.",
     "email": "we@finriseadvisors.com",
-    "areaServed": "US",
+    "telephone": "+916376536415",
+    "areaServed": {
+      "@type": "Country",
+      "name": "United States"
+    },
     "currenciesAccepted": "USD",
     "priceRange": "$$",
+    "founder": {
+      "@type": "Person",
+      "name": "Devendra Choudhary",
+      "jobTitle": "Founder & Senior CFO Advisor"
+    },
     "sameAs": [
       "https://www.facebook.com/profile.php?id=61559260650283",
       "https://www.instagram.com/finriseadvisors/",
       "https://www.linkedin.com/company/101267222/"
     ],
-    "openingHours": "Mo-Fr 09:00-18:00",
-    "serviceType": [
-      "Outsourced Accounting",
-      "Fractional CFO Services",
-      "Bookkeeping",
-      "Payroll Services",
-      "Construction Accounting",
-      "Tax Compliance"
-    ]
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Accounting & CFO Services",
+      "itemListElement": [
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Outsourced Accounting"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Fractional CFO Services"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Bookkeeping"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Payroll Services"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Construction Accounting"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Tax Compliance"}}
+      ]
+    }
   }
   </script>
 
@@ -63,8 +88,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
 
-  <!-- Google Analytics -->
-  <!-- REPLACE G-XXXXXXXXXX with your actual Measurement ID from analytics.google.com -->
+  <!-- Google Analytics — add your Measurement ID from analytics.google.com -->
+  <!-- TO ENABLE: replace G-XXXXXXXXXX below with your real ID and uncomment -->
+  <!--
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -72,6 +98,7 @@
     gtag('js', new Date());
     gtag('config', 'G-XXXXXXXXXX');
   </script>
+  -->
 </head>
 <body>
 

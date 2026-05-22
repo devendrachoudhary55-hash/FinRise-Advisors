@@ -434,6 +434,8 @@ router.get('/sitemap.xml', (req, res) => {
     { url: '/blog', priority: '0.8', freq: 'daily' },
     { url: '/resources', priority: '0.7', freq: 'monthly' },
     { url: '/contact-us', priority: '0.7', freq: 'monthly' },
+    { url: '/privacy-policy', priority: '0.3', freq: 'yearly' },
+    { url: '/terms-of-use', priority: '0.3', freq: 'yearly' },
   ];
 
   const blogUrls = blogPosts.map(p => ({
@@ -463,6 +465,8 @@ router.get('/robots.txt', (req, res) => {
   res.set('Content-Type', 'text/plain');
   res.send(`User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
 
 Sitemap: https://www.finriseadvisors.com/sitemap.xml`);
 });
