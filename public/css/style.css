@@ -65,6 +65,14 @@ body {
 }
 
 .logo img { height: 44px; display: block; }
+.logo-text { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { display: flex; align-items: center; flex-shrink: 0; }
+.logo-name { font-size: 1.15rem; font-weight: 800; color: var(--navy); letter-spacing: -0.3px; }
+.logo-accent { color: var(--teal); }
+
+.footer-logo-text { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.footer-logo-icon { display: flex; align-items: center; flex-shrink: 0; }
+.footer-logo-name { font-size: 1.1rem; font-weight: 800; color: white; letter-spacing: -0.2px; }
 
 .nav-links {
   display: flex;
