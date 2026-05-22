@@ -78,8 +78,23 @@
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <div class="container">
-    <a href="/" class="logo">
-      <img src="/images/Logo.jpg" alt="FinRise Advisors" class="navbar-logo">
+    <a href="/" class="logo logo-wrap">
+      <svg class="logo-svg" viewBox="0 0 52 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="44" x2="52" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#4f46e5"/>
+            <stop offset="45%" stop-color="#0e7490"/>
+            <stop offset="100%" stop-color="#10b981"/>
+          </linearGradient>
+        </defs>
+        <!-- Left curve -->
+        <path d="M4 32 C4 32 4 18 12 18 C20 18 20 32 20 32" stroke="url(#g1)" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <!-- Middle peak -->
+        <path d="M20 32 L26 10 L32 32" stroke="url(#g1)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- Right curve -->
+        <path d="M32 32 C32 32 32 10 40 10 C48 10 48 32 48 32" stroke="url(#g1)" stroke-width="7" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="logo-wordmark">FinRise <span class="logo-sub">Advisors</span></span>
     </a>
     <ul class="nav-links" id="navLinks">
       <li><a href="/" class="<%= page === 'home' ? 'active' : '' %>">Home</a></li>
@@ -115,7 +130,21 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="/images/Logo.jpg" alt="FinRise Advisors" class="footer-logo">
+        <div class="footer-logo-wrap">
+          <svg class="logo-svg" viewBox="0 0 52 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g2" x1="0" y1="44" x2="52" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#4f46e5"/>
+                <stop offset="45%" stop-color="#0e7490"/>
+                <stop offset="100%" stop-color="#10b981"/>
+              </linearGradient>
+            </defs>
+            <path d="M4 32 C4 32 4 18 12 18 C20 18 20 32 20 32" stroke="url(#g2)" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 L26 10 L32 32" stroke="url(#g2)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M32 32 C32 32 32 10 40 10 C48 10 48 32 48 32" stroke="url(#g2)" stroke-width="7" stroke-linecap="round" fill="none"/>
+          </svg>
+          <span class="footer-logo-wordmark">FinRise <span style="color:#0891b2;">Advisors</span></span>
+        </div>
         <p>Dedicated outsourced accounting and fractional CFO services for US businesses. Your full-service finance team at a fraction of the cost.</p>
         <div class="social-links">
           <a href="https://www.facebook.com/profile.php?id=61559260650283" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
