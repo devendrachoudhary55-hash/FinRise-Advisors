@@ -448,25 +448,38 @@ router.post('/contact', async (req, res) => {
 // ===== SITEMAP.XML =====
 router.get('/sitemap.xml', (req, res) => {
   const baseUrl = 'https://www.finriseadvisors.com';
-  const today = new Date().toISOString().split('T')[0];
+
+  // lastmod must be truthful — Google ignores sitemaps whose dates always
+  // say "today". Bump SITE_UPDATED only when page content actually changes.
+  const SITE_UPDATED = '2026-07-28';
 
   const staticPages = [
     { url: '/', priority: '1.0', freq: 'weekly' },
     { url: '/about-us', priority: '0.8', freq: 'monthly' },
     { url: '/services', priority: '0.9', freq: 'weekly' },
     { url: '/pricing', priority: '0.8', freq: 'monthly' },
-    { url: '/blog', priority: '0.8', freq: 'daily' },
+    { url: '/blog', priority: '0.8', freq: 'weekly' },
     { url: '/resources', priority: '0.7', freq: 'monthly' },
     { url: '/contact-us', priority: '0.7', freq: 'monthly' },
     { url: '/privacy-policy', priority: '0.3', freq: 'yearly' },
     { url: '/terms-of-use', priority: '0.3', freq: 'yearly' },
-  ];
+  ].map(p => ({ ...p, lastmod: SITE_UPDATED }));
 
-  const blogUrls = blogPosts.map(p => ({
-    url: `/blog/${p.slug}`,
-    priority: '0.7',
-    freq: 'monthly'
-  }));
+  // Blog posts report their own publish date
+  const blogUrls = blogPosts.map(p => {
+    const d = new Date(p.date);
+    // Build from local parts — toISOString() would shift the date a day
+    // backwards in timezones ahead of UTC.
+    const pad = n => String(n).padStart(2, '0');
+    return {
+      url: `/blog/${p.slug}`,
+      priority: '0.7',
+      freq: 'monthly',
+      lastmod: isNaN(d)
+        ? SITE_UPDATED
+        : `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+    };
+  });
 
   const allPages = [...staticPages, ...blogUrls];
 
@@ -474,7 +487,7 @@ router.get('/sitemap.xml', (req, res) => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allPages.map(p => `  <url>
     <loc>${baseUrl}${p.url}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${p.lastmod}</lastmod>
     <changefreq>${p.freq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`).join('\n')}
