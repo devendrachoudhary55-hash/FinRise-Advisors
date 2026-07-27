@@ -317,7 +317,10 @@ router.get('/', (req, res) => {
     metaDescription: 'FinRise Advisors provides outsourced accounting, bookkeeping, payroll, and fractional CFO services for US small and mid-sized businesses. Save up to 50% vs. in-house. Book a free consultation.',
     keywords: 'outsourced accounting, fractional CFO services, bookkeeping services USA, outsourced CFO, accounting firm USA',
     page: 'home',
-    canonicalUrl: 'https://www.finriseadvisors.com/'
+    canonicalUrl: 'https://www.finriseadvisors.com/',
+    // Surfaced on the homepage so crawlers reach posts directly, rather than
+    // only via /blog. Sitemap-only discovery was leaving them uncrawled.
+    latestPosts: blogPosts.slice(0, 3)
   });
 });
 

@@ -349,6 +349,41 @@
   </div>
 </section>
 
+<!-- LATEST INSIGHTS -->
+<section class="section section-light">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">Latest Insights</span>
+      <h2>Accounting &amp; CFO Guides for US Business Owners</h2>
+      <p>Practical guides on fractional CFO services, construction accounting, and cash flow — written from real client work.</p>
+    </div>
+    <div class="blog-grid">
+      <% latestPosts.forEach(post => { %>
+      <article class="blog-card fade-up">
+        <a href="/blog/<%= post.slug %>" class="blog-card-img-link">
+          <div class="blog-card-img blog-img-<%= post.category.replace(/\s+/g,'-').toLowerCase() %>">
+            <i class="fas <%= post.icon %> blog-img-icon"></i>
+            <span class="blog-cat"><%= post.category %></span>
+          </div>
+        </a>
+        <div class="blog-card-body">
+          <div class="blog-meta">
+            <span><i class="far fa-calendar-alt"></i> <%= post.date %></span>
+            <span><i class="far fa-clock"></i> <%= post.readTime %></span>
+          </div>
+          <h3><a href="/blog/<%= post.slug %>"><%= post.title %></a></h3>
+          <p><%= post.excerpt %></p>
+          <a href="/blog/<%= post.slug %>" class="blog-read-more">Read Article <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </article>
+      <% }) %>
+    </div>
+    <div style="text-align:center;margin-top:40px;">
+      <a href="/blog" class="btn btn-secondary">View All Articles <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="cta-section">
   <div class="container">
