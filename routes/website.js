@@ -286,6 +286,28 @@ const blogPosts = [
   }
 ];
 
+// ===== LEGACY URL REDIRECTS (301) =====
+// Old site structure crawled by Google before the current site launched.
+// Permanent redirects preserve link equity and clear the stale
+// "Crawled - currently not indexed" entries in Search Console.
+const legacyRedirects = {
+  '/blogs/benefits-of-outsourcing-bookkeeping-accounting-for-cpa-firms': '/blog/outsourced-accounting-services-for-small-business',
+  '/blogs/outsourced-accounting-benefits-types-and-getting-started': '/blog/outsourced-accounting-services-for-small-business',
+  '/service/receivables-management': '/services#outsourced-accounting',
+  '/service/payables-management': '/services#outsourced-accounting',
+  '/service/tax-return-preparation': '/services#tax'
+};
+
+router.get(Object.keys(legacyRedirects), (req, res) => {
+  res.redirect(301, legacyRedirects[req.path]);
+});
+
+// Family-level fallbacks for any remaining old paths
+router.get('/blogs/:slug', (req, res) => res.redirect(301, '/blog'));
+router.get('/service/:slug', (req, res) => res.redirect(301, '/services'));
+router.get('/faqs/:slug', (req, res) => res.redirect(301, '/resources'));
+router.get('/efile-itr/:slug', (req, res) => res.redirect(301, '/services#tax'));
+
 // ===== HOME =====
 router.get('/', (req, res) => {
   res.render('pages/home', {
