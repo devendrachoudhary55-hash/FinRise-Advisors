@@ -291,6 +291,8 @@ const blogPosts = [
 // Permanent redirects preserve link equity and clear the stale
 // "Crawled - currently not indexed" entries in Search Console.
 const legacyRedirects = {
+  '/news': '/blog',
+  '/terms-conditions': '/terms-of-use',
   '/blogs/benefits-of-outsourcing-bookkeeping-accounting-for-cpa-firms': '/blog/outsourced-accounting-services-for-small-business',
   '/blogs/outsourced-accounting-benefits-types-and-getting-started': '/blog/outsourced-accounting-services-for-small-business',
   '/service/receivables-management': '/services#outsourced-accounting',
