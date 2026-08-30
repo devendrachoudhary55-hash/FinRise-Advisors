@@ -1845,6 +1845,11 @@ body {
 .author-bio-info span { font-size: 0.8rem; color: var(--teal); font-weight: 600; display: block; margin-bottom: 10px; }
 .author-bio-info p { font-size: 0.87rem; color: var(--gray); line-height: 1.75; margin: 0; }
 
+/* Side-by-side avatar leaves too little room for the text on narrow screens */
+@media (max-width: 560px) {
+  .author-bio { flex-direction: column; gap: 16px; padding: 22px; }
+}
+
 .post-cta-box {
   display: flex;
   align-items: center;

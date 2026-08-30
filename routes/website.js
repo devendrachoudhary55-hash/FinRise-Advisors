@@ -313,9 +313,9 @@ router.get('/efile-itr/:slug', (req, res) => res.redirect(301, '/services#tax'))
 // ===== HOME =====
 router.get('/', (req, res) => {
   res.render('pages/home', {
-    title: 'Outsourced Accounting & Fractional CFO Services for US Businesses | FinRise Advisors',
-    metaDescription: 'FinRise Advisors provides outsourced accounting, bookkeeping, payroll, and fractional CFO services for US small and mid-sized businesses. Save up to 50% vs. in-house. Book a free consultation.',
-    keywords: 'outsourced accounting, fractional CFO services, bookkeeping services USA, outsourced CFO, accounting firm USA',
+    title: 'Construction Accounting, Bookkeeping & Fractional CFO Services | FinRise Advisors',
+    metaDescription: 'Outsourced accounting, bookkeeping, payroll and fractional CFO for US construction companies — job costing, WIP schedules, AIA billing and retainage.',
+    keywords: 'construction accounting services, contractor bookkeeping, job costing, WIP schedule preparation, AIA billing G702 G703, retainage tracking, construction fractional CFO, outsourced accounting for contractors',
     page: 'home',
     canonicalUrl: 'https://www.finriseadvisors.com/',
     // Surfaced on the homepage so crawlers reach posts directly, rather than
