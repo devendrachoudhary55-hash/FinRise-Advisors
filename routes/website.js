@@ -349,9 +349,9 @@ router.get('/services', (req, res) => {
 // ===== PRICING =====
 router.get('/pricing', (req, res) => {
   res.render('pages/pricing', {
-    title: 'Pricing — Outsourced Accounting & CFO Services | FinRise Advisors',
-    metaDescription: 'Transparent, flexible pricing for outsourced accounting and fractional CFO services. Starter from $499/month. Growth from $1,499/month. No long-term contracts. Get a custom quote.',
-    keywords: 'outsourced accounting pricing, fractional CFO cost, accounting services price, bookkeeping services cost',
+    title: 'Pricing — Construction Accounting & Fractional CFO Services | FinRise Advisors',
+    metaDescription: 'Monthly pricing for construction accounting, bookkeeping, payroll and fractional CFO services. No long-term contracts. Get a quote scoped to your jobs.',
+    keywords: 'construction accounting pricing, contractor bookkeeping cost, construction fractional CFO cost, job costing services price',
     page: 'pricing',
     canonicalUrl: 'https://www.finriseadvisors.com/pricing'
   });

@@ -2090,7 +2090,9 @@ body {
 
 .plan-features li i.fa-check { color: var(--teal); font-size: 0.75rem; flex-shrink: 0; }
 .plan-features li i.fa-times { color: var(--muted); font-size: 0.75rem; flex-shrink: 0; }
-.plan-feature-no { opacity: 0.5; }
+/* Not-included items: dim + strike so they can't be mistaken for inclusions */
+.plan-feature-no { opacity: 0.5; text-decoration: line-through; }
+.plan-feature-no i { text-decoration: none; }
 
 .plan-note {
   text-align: center;
