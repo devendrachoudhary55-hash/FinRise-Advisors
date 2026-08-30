@@ -2094,6 +2094,132 @@ body {
 .plan-feature-no { opacity: 0.5; text-decoration: line-through; }
 .plan-feature-no i { text-decoration: none; }
 
+/* Revenue band + the question each tier answers */
+.plan-band {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--slate);
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px 12px;
+  margin-bottom: 14px;
+}
+.pricing-card-featured .plan-band {
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.16);
+}
+
+.plan-question {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--slate);
+  margin: 14px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--teal);
+  line-height: 1.55;
+}
+.pricing-card-featured .plan-question {
+  color: rgba(255,255,255,0.75);
+  border-left-color: var(--teal-mid);
+}
+
+/* Sub-label above a feature list ("Included" / "Not included") */
+.plan-list-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--muted);
+  margin: 20px 0 10px;
+}
+.pricing-card-featured .plan-list-label { color: rgba(255,255,255,0.45); }
+.plan-features + .plan-list-label { margin-top: 4px; }
+.plan-list-label + .plan-features { border-top: none; padding-top: 0; }
+
+/* Paid diagnostic — the lead offer */
+.diagnostic-box {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: center;
+  background: var(--navy);
+  border-radius: var(--radius-xl);
+  padding: 40px 44px;
+  margin-bottom: 56px;
+}
+.diagnostic-box .tag { background: rgba(255,255,255,0.1); color: var(--teal-mid); }
+.diagnostic-box h3 {
+  font-size: 1.6rem;
+  color: white;
+  margin: 14px 0 12px;
+  letter-spacing: -0.5px;
+}
+.diagnostic-box p { color: rgba(255,255,255,0.7); font-size: 0.92rem; line-height: 1.75; margin: 0; }
+.diagnostic-price {
+  text-align: right;
+  padding-left: 32px;
+  border-left: 1px solid rgba(255,255,255,0.14);
+}
+.diagnostic-price .amount {
+  display: block;
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.diagnostic-price .unit {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Add-on pricing table */
+.addon-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: white;
+}
+.addon-table { width: 100%; border-collapse: collapse; min-width: 520px; }
+.addon-table th {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--muted);
+  text-align: left;
+  padding: 14px 22px;
+  background: var(--off-white);
+  border-bottom: 1px solid var(--border);
+}
+.addon-table td {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+  color: var(--gray);
+}
+.addon-table tr:last-child td { border-bottom: none; }
+.addon-table td:first-child { color: var(--slate); font-weight: 600; }
+.addon-table td.amount { white-space: nowrap; font-weight: 600; color: var(--navy); }
+
+@media (max-width: 820px) {
+  .diagnostic-box { grid-template-columns: 1fr; gap: 24px; padding: 32px 26px; }
+  .diagnostic-price {
+    text-align: left;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.14);
+    padding-top: 22px;
+  }
+}
+
 .plan-note {
   text-align: center;
   font-size: 0.75rem;
