@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 
 // Load Submission model safely — website still works even if MongoDB is unavailable
@@ -449,13 +451,58 @@ router.post('/contact', async (req, res) => {
 });
 
 // ===== SITEMAP.XML =====
+
+// lastmod must be truthful. Reporting "today" for everything on every request
+// makes Google distrust the field and ignore it; reporting a hardcoded date
+// goes stale and tells Google not to re-crawl pages that did change. So each
+// static page reports the modification time of the files that actually render
+// it, and never needs updating by hand.
+const SITEMAP_FALLBACK_DATE = '2026-08-31';
+
+// Files shared by every page — a footer or nav edit is a real content change.
+const SHARED_SOURCES = ['views/partials/layout.ejs'];
+
+const PAGE_SOURCES = {
+  '/': ['views/pages/home.ejs'],
+  '/about-us': ['views/pages/about.ejs'],
+  '/services': ['views/pages/services.ejs'],
+  '/pricing': ['views/pages/pricing.ejs'],
+  '/blog': ['views/pages/blog.ejs'],
+  '/resources': ['views/pages/resources.ejs'],
+  '/contact-us': ['views/pages/contact.ejs'],
+  '/privacy-policy': ['views/pages/privacy-policy.ejs'],
+  '/terms-of-use': ['views/pages/terms-of-use.ejs'],
+};
+
+const PROJECT_ROOT = path.join(__dirname, '..');
+
+function formatDate(d) {
+  // Build from local parts — toISOString() shifts the date back a day in
+  // timezones ahead of UTC.
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+// Newest mtime across a page's own views plus the shared layout.
+function sourceModifiedDate(relativePaths) {
+  let newest = 0;
+  for (const rel of [...relativePaths, ...SHARED_SOURCES]) {
+    try {
+      const { mtimeMs } = fs.statSync(path.join(PROJECT_ROOT, rel));
+      if (mtimeMs > newest) newest = mtimeMs;
+    } catch (err) {
+      // Missing or unreadable file — other sources still count.
+    }
+  }
+  if (!newest) return SITEMAP_FALLBACK_DATE;
+  const d = new Date(newest);
+  // A clock-skewed future date would be a bogus signal to Google.
+  if (isNaN(d) || d > new Date()) return SITEMAP_FALLBACK_DATE;
+  return formatDate(d);
+}
+
 router.get('/sitemap.xml', (req, res) => {
   const baseUrl = 'https://www.finriseadvisors.com';
-
-  // lastmod must be truthful — Google ignores sitemaps whose dates always
-  // say "today". Bump SITE_UPDATED whenever page content actually changes,
-  // otherwise the sitemap tells Google there is nothing worth re-crawling.
-  const SITE_UPDATED = '2026-08-31';
 
   const staticPages = [
     { url: '/', priority: '1.0', freq: 'weekly' },
@@ -467,21 +514,17 @@ router.get('/sitemap.xml', (req, res) => {
     { url: '/contact-us', priority: '0.7', freq: 'monthly' },
     { url: '/privacy-policy', priority: '0.3', freq: 'yearly' },
     { url: '/terms-of-use', priority: '0.3', freq: 'yearly' },
-  ].map(p => ({ ...p, lastmod: SITE_UPDATED }));
+  ].map(p => ({ ...p, lastmod: sourceModifiedDate(PAGE_SOURCES[p.url] || []) }));
 
-  // Blog posts report their own publish date
+  // Blog posts report their own publish date, or `updated` if the body was
+  // revised after publishing.
   const blogUrls = blogPosts.map(p => {
-    const d = new Date(p.date);
-    // Build from local parts — toISOString() would shift the date a day
-    // backwards in timezones ahead of UTC.
-    const pad = n => String(n).padStart(2, '0');
+    const d = new Date(p.updated || p.date);
     return {
       url: `/blog/${p.slug}`,
       priority: '0.7',
       freq: 'monthly',
-      lastmod: isNaN(d)
-        ? SITE_UPDATED
-        : `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+      lastmod: isNaN(d) ? SITEMAP_FALLBACK_DATE : formatDate(d)
     };
   });
 
