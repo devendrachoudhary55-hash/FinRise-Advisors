@@ -453,8 +453,9 @@ router.get('/sitemap.xml', (req, res) => {
   const baseUrl = 'https://www.finriseadvisors.com';
 
   // lastmod must be truthful — Google ignores sitemaps whose dates always
-  // say "today". Bump SITE_UPDATED only when page content actually changes.
-  const SITE_UPDATED = '2026-07-28';
+  // say "today". Bump SITE_UPDATED whenever page content actually changes,
+  // otherwise the sitemap tells Google there is nothing worth re-crawling.
+  const SITE_UPDATED = '2026-08-31';
 
   const staticPages = [
     { url: '/', priority: '1.0', freq: 'weekly' },
