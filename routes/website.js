@@ -452,29 +452,25 @@ router.post('/contact', async (req, res) => {
 
 // ===== SITEMAP.XML =====
 
-// lastmod must be truthful. Reporting "today" for everything on every request
-// makes Google distrust the field and ignore it; reporting a hardcoded date
-// goes stale and tells Google not to re-crawl pages that did change. So each
-// static page reports the modification time of the files that actually render
-// it, and never needs updating by hand.
-const SITEMAP_FALLBACK_DATE = '2026-08-31';
+// lastmod must be truthful. Reporting "today" on every request makes Google
+// distrust the field; a hardcoded date goes stale and tells Google not to
+// re-crawl pages that did change; and file mtimes are useless here because
+// Vercel normalises every file to a fixed epoch (2018-10-20) for reproducible
+// builds. So dates come from git, written to content-dates.json by
+// scripts/update-sitemap-dates.js and committed with the change itself.
+const SITEMAP_FALLBACK_DATE = '2026-09-12';
 
-// Files shared by every page — a footer or nav edit is a real content change.
-const SHARED_SOURCES = ['views/partials/layout.ejs'];
-
-const PAGE_SOURCES = {
-  '/': ['views/pages/home.ejs'],
-  '/about-us': ['views/pages/about.ejs'],
-  '/services': ['views/pages/services.ejs'],
-  '/pricing': ['views/pages/pricing.ejs'],
-  '/blog': ['views/pages/blog.ejs'],
-  '/resources': ['views/pages/resources.ejs'],
-  '/contact-us': ['views/pages/contact.ejs'],
-  '/privacy-policy': ['views/pages/privacy-policy.ejs'],
-  '/terms-of-use': ['views/pages/terms-of-use.ejs'],
-};
-
-const PROJECT_ROOT = path.join(__dirname, '..');
+// Loaded once per cold start; the file ships with the deployment.
+const PAGE_DATES = (() => {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, '..', 'content-dates.json'), 'utf8');
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed.pages === 'object' ? parsed.pages : {};
+  } catch (err) {
+    console.error('sitemap: content-dates.json unreadable, using fallback date');
+    return {};
+  }
+})();
 
 function formatDate(d) {
   // Build from local parts — toISOString() shifts the date back a day in
@@ -483,22 +479,9 @@ function formatDate(d) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-// Newest mtime across a page's own views plus the shared layout.
-function sourceModifiedDate(relativePaths) {
-  let newest = 0;
-  for (const rel of [...relativePaths, ...SHARED_SOURCES]) {
-    try {
-      const { mtimeMs } = fs.statSync(path.join(PROJECT_ROOT, rel));
-      if (mtimeMs > newest) newest = mtimeMs;
-    } catch (err) {
-      // Missing or unreadable file — other sources still count.
-    }
-  }
-  if (!newest) return SITEMAP_FALLBACK_DATE;
-  const d = new Date(newest);
-  // A clock-skewed future date would be a bogus signal to Google.
-  if (isNaN(d) || d > new Date()) return SITEMAP_FALLBACK_DATE;
-  return formatDate(d);
+function pageDate(url) {
+  const d = PAGE_DATES[url];
+  return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : SITEMAP_FALLBACK_DATE;
 }
 
 router.get('/sitemap.xml', (req, res) => {
@@ -514,7 +497,7 @@ router.get('/sitemap.xml', (req, res) => {
     { url: '/contact-us', priority: '0.7', freq: 'monthly' },
     { url: '/privacy-policy', priority: '0.3', freq: 'yearly' },
     { url: '/terms-of-use', priority: '0.3', freq: 'yearly' },
-  ].map(p => ({ ...p, lastmod: sourceModifiedDate(PAGE_SOURCES[p.url] || []) }));
+  ].map(p => ({ ...p, lastmod: pageDate(p.url) }));
 
   // Blog posts report their own publish date, or `updated` if the body was
   // revised after publishing.

@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "sitemap-dates": "node scripts/update-sitemap-dates.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
