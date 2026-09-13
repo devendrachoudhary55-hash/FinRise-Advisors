@@ -9,7 +9,8 @@
     "sitemap-dates": "node scripts/update-sitemap-dates.js",
     "validate-posts": "node scripts/validate-posts.js",
     "render-check": "node scripts/render-check.js",
-    "check": "node scripts/validate-posts.js && node scripts/render-check.js"
+    "check": "node scripts/validate-posts.js && node scripts/render-check.js",
+    "preview-scheduled": "node scripts/preview-scheduled.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
