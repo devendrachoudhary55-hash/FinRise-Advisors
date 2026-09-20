@@ -24,15 +24,24 @@ for (const f of fs.readdirSync(POSTS).filter(f => f.endsWith('.json'))) {
   written.set(p.slug, p.publishAt);
 }
 
-// Start the day after whatever is already scheduled furthest out.
-const lastScheduled = [...written.values()].sort().pop();
-const start = new Date(lastScheduled + 'T00:00:00');
-start.setDate(start.getDate() + 1);
+// Two posts a week, Tuesday and Thursday. Daily output from a one-person firm
+// reads as mass-produced, and the evidence says specificity converts while
+// volume does not — so the cadence is deliberate, not a limitation.
+const PUBLISH_DAYS = [2, 4]; // Sun=0
 
-const rows = plan.map((topic, i) => {
-  const d = new Date(start);
-  d.setDate(d.getDate() + i);
-  return { ...topic, date: iso(d), done: written.has(topic.slug) };
+// Start after whatever is already scheduled furthest out, excluding the plan's
+// own entries so re-running this does not drag the schedule forward each time.
+const planSlugs = new Set(plan.map(p => p.slug));
+const fixedDates = [...written.entries()]
+  .filter(([slug]) => !planSlugs.has(slug))
+  .map(([, date]) => date)
+  .sort();
+const cursor = new Date((fixedDates.pop() || iso(new Date())) + 'T00:00:00');
+
+const rows = plan.map(topic => {
+  do { cursor.setDate(cursor.getDate() + 1); }
+  while (!PUBLISH_DAYS.includes(cursor.getDay()));
+  return { ...topic, date: iso(cursor), done: written.has(topic.slug) };
 });
 
 if (process.argv.includes('--json')) {
