@@ -95,6 +95,112 @@ router.get('/resources', (req, res) => {
   });
 });
 
+// ===== GATED RESOURCE DOWNLOADS =====
+// The files live in content/downloads, outside public/, so the form is a real
+// gate rather than a suggestion — a direct URL guess cannot reach the file.
+const DOWNLOADS = {
+  'wip-schedule': {
+    slug: 'wip-schedule',
+    title: 'WIP Schedule Template for Contractors',
+    intro: 'A working Excel schedule built on the cost-to-cost percentage-of-completion method — the format your lender and surety expect. Fourteen sample jobs already filled in so you can see how it behaves before you put your own numbers in.',
+    fileLabel: 'Excel template',
+    file: 'FinRise-WIP-Schedule-Template.xlsx',
+    downloadName: 'FinRise-WIP-Schedule-Template.xlsx',
+    features: [
+      'Percentage of completion calculated automatically from cost to date',
+      'Over- and under-billing worked out per job',
+      'Split into costs in excess of billings and billings in excess of costs',
+      'Portfolio backlog and gross margin',
+      'Fourteen worked sample jobs showing both billing positions',
+      'Plain-English notes on how every column is derived',
+    ],
+  },
+};
+
+function renderDownload(req, res, resource, opts = {}) {
+  res.render('pages/resource-download', {
+    title: `${resource.title} — Free Download | FinRise Advisors`,
+    metaDescription: `Free ${resource.title.toLowerCase()} from FinRise Advisors. Cost-to-cost percentage of completion, over and under billings, and backlog — built for US contractors.`,
+    keywords: 'WIP schedule template, work in progress schedule excel, construction WIP template, percentage of completion template',
+    page: 'resources',
+    canonicalUrl: `https://www.finriseadvisors.com/resources/${resource.slug}`,
+    resource,
+    ready: opts.ready || false,
+    error: opts.error || null,
+    values: opts.values || { name: '', email: '', company: '', phone: '' },
+  });
+}
+
+router.get('/resources/:slug', (req, res, next) => {
+  const resource = DOWNLOADS[req.params.slug];
+  if (!resource) return next();
+  const unlocked = req.signedCookies && req.signedCookies[`dl_${resource.slug}`] === 'true';
+  renderDownload(req, res, resource, { ready: unlocked });
+});
+
+router.post('/resources/:slug', async (req, res, next) => {
+  const resource = DOWNLOADS[req.params.slug];
+  if (!resource) return next();
+
+  const values = {
+    name: (req.body.name || '').trim(),
+    email: (req.body.email || '').trim(),
+    company: (req.body.company || '').trim(),
+    phone: (req.body.phone || '').trim(),
+  };
+  const revenue = (req.body.revenue || '').trim();
+
+  if (!values.name || !values.email || !values.company) {
+    return renderDownload(req, res, resource, { error: 'Please fill in your name, email and company.', values });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email)) {
+    return renderDownload(req, res, resource, { error: 'That email address does not look right.', values });
+  }
+
+  // A failed save must not cost us the lead's goodwill — log it and still
+  // hand over the file.
+  if (Submission) {
+    try {
+      const ipAddress =
+        req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+        req.socket?.remoteAddress || '';
+      await Submission.create({
+        ...values,
+        service: 'Resource download',
+        resource: resource.title,
+        message: revenue ? `Annual revenue: ${revenue}` : '',
+        source: 'resource',
+        ipAddress,
+      });
+      console.log('Resource lead saved:', { ...values, resource: resource.slug });
+    } catch (err) {
+      console.error('Failed to save resource lead:', err.message);
+    }
+  } else {
+    console.log('Resource lead (no DB):', { ...values, resource: resource.slug });
+  }
+
+  res.cookie(`dl_${resource.slug}`, 'true', {
+    signed: true,
+    httpOnly: true,
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+  });
+  res.redirect(`/resources/${resource.slug}#get`);
+});
+
+router.get('/download/:slug', (req, res, next) => {
+  const resource = DOWNLOADS[req.params.slug];
+  if (!resource) return next();
+  if (!req.signedCookies || req.signedCookies[`dl_${resource.slug}`] !== 'true') {
+    return res.redirect(`/resources/${resource.slug}#get`);
+  }
+  res.download(path.join(__dirname, '..', 'content', 'downloads', resource.file), resource.downloadName, err => {
+    if (err && !res.headersSent) res.redirect(`/resources/${resource.slug}`);
+  });
+});
+
 // ===== BLOG LIST =====
 router.get('/blog', (req, res) => {
   res.render('pages/blog', {

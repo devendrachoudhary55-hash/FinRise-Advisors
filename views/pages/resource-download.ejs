@@ -1,0 +1,93 @@
+<section class="page-hero" style="padding-bottom:56px;">
+  <div class="container">
+    <a href="/resources" class="back-link"><i class="fas fa-arrow-left"></i> Back to Resources</a>
+    <span class="tag" style="margin-bottom:16px;display:inline-block;">Free Download</span>
+    <h1 style="max-width:760px;"><%= resource.title %></h1>
+    <p style="max-width:640px;"><%= resource.intro %></p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="download-layout">
+
+      <!-- What you get -->
+      <div class="download-detail">
+        <h2>What's in it</h2>
+        <ul class="resource-features" style="margin-bottom:32px;">
+          <% resource.features.forEach(f => { %>
+          <li><i class="fas fa-check"></i> <%= f %></li>
+          <% }) %>
+        </ul>
+
+        <h3 style="font-size:1.05rem;margin-bottom:10px;">How the schedule calculates</h3>
+        <div class="addon-table-wrap" style="margin-bottom:28px;">
+          <table class="addon-table">
+            <thead><tr><th>Column</th><th>Calculation</th></tr></thead>
+            <tbody>
+              <tr><td>% Complete</td><td>Cost to date ÷ current budget</td></tr>
+              <tr><td>Earned revenue</td><td>Final contract × % complete</td></tr>
+              <tr><td>Over / (under) billing</td><td>Earned revenue − billed to date</td></tr>
+              <tr><td>Backlog</td><td>Final contract − billed to date</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size:0.88rem;color:var(--gray);">Blue cells are inputs. Everything else calculates, so changing a budget or a cost updates the whole schedule. Built on the cost-to-cost percentage-of-completion method that lenders and sureties expect.</p>
+      </div>
+
+      <!-- Form / download -->
+      <aside class="download-form-card" id="get">
+        <% if (ready) { %>
+          <div class="download-ready">
+            <div class="download-ready-icon"><i class="fas fa-circle-check"></i></div>
+            <h3>Your download is ready</h3>
+            <p>Thanks — the file is below. We've sent nothing to your inbox yet; if you'd like a walkthrough of your own numbers, just reply to us.</p>
+            <a href="/download/<%= resource.slug %>" class="btn btn-primary" style="width:100%;justify-content:center;">
+              Download <%= resource.fileLabel %> <i class="fas fa-download"></i>
+            </a>
+            <a href="/contact-us" class="btn btn-outline-dark" style="width:100%;justify-content:center;margin-top:12px;">Talk to a CA about your WIP</a>
+          </div>
+        <% } else { %>
+          <h3>Get the template</h3>
+          <p class="download-form-sub">Tell us where to find you and the download appears straight away.</p>
+          <% if (error) { %><div class="form-error"><%= error %></div><% } %>
+          <form method="POST" action="/resources/<%= resource.slug %>">
+            <div class="form-group">
+              <label>Your name <span class="req">*</span></label>
+              <input type="text" name="name" value="<%= values.name %>" placeholder="John Smith" required>
+            </div>
+            <div class="form-group">
+              <label>Work email <span class="req">*</span></label>
+              <input type="email" name="email" value="<%= values.email %>" placeholder="john@company.com" required>
+            </div>
+            <div class="form-group">
+              <label>Company <span class="req">*</span></label>
+              <input type="text" name="company" value="<%= values.company %>" placeholder="Your Company LLC" required>
+            </div>
+            <div class="form-group">
+              <label>Phone <span class="optional">optional</span></label>
+              <input type="tel" name="phone" value="<%= values.phone %>" placeholder="+1 (555) 000-0000">
+            </div>
+            <div class="form-group">
+              <label>Annual revenue <span class="optional">optional</span></label>
+              <select name="revenue">
+                <option value="">Prefer not to say</option>
+                <option value="Under $1M">Under $1M</option>
+                <option value="$1M – $3M">$1M – $3M</option>
+                <option value="$3M – $8M">$3M – $8M</option>
+                <option value="$8M – $20M">$8M – $20M</option>
+                <option value="Over $20M">Over $20M</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+              Get the Template <i class="fas fa-arrow-right"></i>
+            </button>
+            <p class="download-privacy">We'll use this to send you the file and occasional construction accounting notes. No sharing, no selling — see our <a href="/privacy-policy">Privacy Policy</a>.</p>
+          </form>
+        <% } %>
+      </aside>
+
+    </div>
+  </div>
+</section>

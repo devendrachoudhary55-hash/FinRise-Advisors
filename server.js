@@ -33,7 +33,22 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(process.env.SESSION_SECRET || 'finrise-secret-2026'));
 
-// ===== WEBSITE ROUTES (no DB needed) =====
+// ===== ENSURE DB CONNECTED before anything that writes =====
+// Public routes are mounted ahead of the /admin DB middleware, so a cold
+// serverless invocation handling only a form POST would find no connection,
+// buffer for 10s, and lose the lead silently. Every POST connects first.
+app.use(async (req, res, next) => {
+  if (req.method !== 'POST') return next();
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('DB connection failed:', err.message);
+    // Still call next — the form should respond even if the save cannot happen
+  }
+  next();
+});
+
+// ===== WEBSITE ROUTES =====
 const websiteRoutes = require('./routes/website');
 app.use('/', websiteRoutes);
 

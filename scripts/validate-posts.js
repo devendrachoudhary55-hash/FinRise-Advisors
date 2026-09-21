@@ -41,7 +41,9 @@ if (!files.length) {
 
 // Internal link targets that exist on the site.
 const STATIC_ROUTES = new Set(['/', '/about-us', '/services', '/pricing', '/blog',
-  '/resources', '/contact-us', '/privacy-policy', '/terms-of-use']);
+  '/resources', '/contact-us', '/privacy-policy', '/terms-of-use',
+  // gated resource landing pages
+  '/resources/wip-schedule']);
 
 const allSlugs = new Set();
 const parsed = [];
