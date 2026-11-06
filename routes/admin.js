@@ -36,15 +36,27 @@ function requireLeadsToken(req, res, next) {
 // Everything still waiting to be judged and followed up, oldest first.
 //   ?status=pending (default) | triaged | all
 //   ?limit=1..100   (default 25)
+//   ?sinceDays=N    only leads created in the last N days
+//
+// "pending" must be {$ne: true}, not {nurtured: false}. Submissions saved
+// before this field existed have no `nurtured` key at all, and Mongo does not
+// match a missing field against false — every pre-existing lead would be
+// invisible to the feed.
 router.get('/api/leads', requireLeadsToken, async (req, res) => {
   try {
     const status = req.query.status || 'pending';
     const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 25, 1), 100);
 
     let query;
-    if (status === 'pending') query = { nurtured: false };
+    if (status === 'pending') query = { nurtured: { $ne: true } };
     else if (status === 'triaged') query = { nurtured: true };
     else query = {};
+
+    const sinceDays = parseInt(req.query.sinceDays, 10);
+    if (Number.isFinite(sinceDays) && sinceDays > 0) {
+      const cutoff = new Date(Date.now() - sinceDays * 24 * 60 * 60 * 1000);
+      query.createdAt = { $gte: cutoff };
+    }
 
     const leads = await Submission.find(query)
       .sort({ createdAt: 1 })
@@ -55,7 +67,7 @@ router.get('/api/leads', requireLeadsToken, async (req, res) => {
       generatedAt: new Date().toISOString(),
       status,
       count: leads.length,
-      pendingTotal: await Submission.countDocuments({ nurtured: false }),
+      pendingTotal: await Submission.countDocuments({ nurtured: { $ne: true } }),
       leads: leads.map(l => ({
         id: String(l._id),
         createdAt: l.createdAt,
