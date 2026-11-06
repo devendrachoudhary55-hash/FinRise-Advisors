@@ -1,7 +1,114 @@
 const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 const Submission = require('../models/Submission');
 const requireAdmin = require('../middleware/auth');
+
+// =====================================================================
+// LEADS API — read-only feed for the daily lead-triage task
+// =====================================================================
+// The daily task runs on a laptop with no database credentials, so it reads
+// leads over HTTP instead. Authentication is a single shared token in
+// LEADS_API_TOKEN, compared in constant time. This sits under /admin so it
+// inherits the DB-connect middleware in server.js, but it deliberately does
+// NOT use requireAdmin — a cookie is useless to a background script.
+//
+// If LEADS_API_TOKEN is unset the endpoints refuse every request rather than
+// falling open.
+
+function requireLeadsToken(req, res, next) {
+  const expected = process.env.LEADS_API_TOKEN || '';
+  if (!expected) {
+    return res.status(503).json({ error: 'leads_api_disabled' });
+  }
+  const given = req.get('x-leads-token') || req.query.token || '';
+  const a = Buffer.from(String(given));
+  const b = Buffer.from(expected);
+  // timingSafeEqual throws on a length mismatch, so check length first. The
+  // length of the token is not a useful secret.
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+  next();
+}
+
+// ----- GET /admin/api/leads -------------------------------------------
+// Everything still waiting to be judged and followed up, oldest first.
+//   ?status=pending (default) | triaged | all
+//   ?limit=1..100   (default 25)
+router.get('/api/leads', requireLeadsToken, async (req, res) => {
+  try {
+    const status = req.query.status || 'pending';
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 25, 1), 100);
+
+    let query;
+    if (status === 'pending') query = { nurtured: false };
+    else if (status === 'triaged') query = { nurtured: true };
+    else query = {};
+
+    const leads = await Submission.find(query)
+      .sort({ createdAt: 1 })
+      .limit(limit)
+      .lean();
+
+    res.json({
+      generatedAt: new Date().toISOString(),
+      status,
+      count: leads.length,
+      pendingTotal: await Submission.countDocuments({ nurtured: false }),
+      leads: leads.map(l => ({
+        id: String(l._id),
+        createdAt: l.createdAt,
+        name: l.name,
+        email: l.email,
+        phone: l.phone,
+        company: l.company,
+        service: l.service,
+        message: l.message,
+        resource: l.resource,
+        source: l.source,
+        triage: l.triage,
+        nurtured: l.nurtured,
+        triageNote: l.triageNote
+      }))
+    });
+  } catch (err) {
+    console.error('leads api:', err.message);
+    res.status(500).json({ error: 'server_error', detail: err.message });
+  }
+});
+
+// ----- POST /admin/api/leads/:id/triage -------------------------------
+// Records the judgement and marks the lead handled so it is never queued
+// twice. Body: { triage: 'genuine'|'spam', note?: string, nurtured?: boolean }
+router.post('/api/leads/:id/triage', requireLeadsToken, async (req, res) => {
+  try {
+    const { triage, note } = req.body || {};
+    if (!['genuine', 'spam'].includes(triage)) {
+      return res.status(400).json({ error: 'triage must be "genuine" or "spam"' });
+    }
+    const nurtured = req.body.nurtured === undefined ? true : !!req.body.nurtured;
+
+    const now = new Date();
+    const updated = await Submission.findByIdAndUpdate(
+      req.params.id,
+      {
+        triage,
+        triagedAt: now,
+        nurtured,
+        nurturedAt: nurtured ? now : null,
+        triageNote: String(note || '').slice(0, 2000)
+      },
+      { new: true }
+    ).lean();
+
+    if (!updated) return res.status(404).json({ error: 'not_found' });
+    res.json({ ok: true, id: String(updated._id), triage: updated.triage, nurtured: updated.nurtured });
+  } catch (err) {
+    console.error('leads api triage:', err.message);
+    res.status(500).json({ error: 'server_error', detail: err.message });
+  }
+});
 
 // ===== LOGIN PAGE =====
 router.get('/login', (req, res) => {
